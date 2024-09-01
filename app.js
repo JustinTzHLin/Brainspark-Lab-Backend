@@ -9,7 +9,7 @@ const PORT = 8000;
 const dev = process.env.NODE_ENV !== "production";
 const app = express();
 const corsOptions = {
-  origin: "http://localhost:3001",
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true,
 };
 
@@ -17,6 +17,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+console.log(app.settings.env);
 
 app.get('/', (req, res) => {
   res.send('Hello World')
