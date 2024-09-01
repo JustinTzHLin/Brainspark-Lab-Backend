@@ -56,50 +56,50 @@ userController.verifyUser = async (req, res, next) => {
 /*
  * Create User
  */
-// userController.createUser = async (req, res, next) => {
-//   console.log("In userController.createUser");
+userController.createUser = async (req, res, next) => {
+  console.log("In userController.createUser");
 
-//   // Destructure from prior middleware
-//   const { username, password, email } = req.body;
-//   try {
+  // Destructure from prior middleware
+  const { username, password, email } = req.body;
+  try {
 
-//     // Query database for existing user with input username
-//     const uniqueUserSQL = `SELECT * FROM users WHERE username=$1 AND oauth_provider=$2;`;
-//     const uniqueUserData = await pgDB.query(uniqueUserSQL, [username, 'none']);
-//     console.log('uniqueUserData:', uniqueUserData.rows[0]);
+    // Query database for existing user with input username
+    const uniqueUserSQL = `SELECT * FROM users WHERE username=$1 AND oauth_provider=$2;`;
+    const uniqueUserData = await pgDB.query(uniqueUserSQL, [username, 'none']);
+    console.log('uniqueUserData:', uniqueUserData.rows[0]);
   
-//     // Return error when usrename existed
-//     if (uniqueUserData.rows.length !== 0) {
-//       console.log('User existed.');
-//       return next({
-//         log: 'username was not unique',
-//         status: 500,
-//         message: { err: 'username already exists in database'}
-//       })
-//     }
+    // Return error when usrename existed
+    if (uniqueUserData.rows.length !== 0) {
+      console.log('User existed.');
+      return next({
+        log: 'username was not unique',
+        status: 500,
+        message: { err: 'username already exists in database'}
+      })
+    }
 
-//     // Hash password using bcrypt
-//     const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
-//     const hashedPassword = await bcrypt.hash(password, salt);
+    // Hash password using bcrypt
+    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-//     // Create new user
-//     const createUserSQL = 'INSERT INTO users(username, password, email) VALUES($1, $2, $3) Returning *;';
-//     const newUserData = await pgDB.query(createUserSQL, [username, hashedPassword, email]);
-//     console.log('newUserData:', newUserData.rows[0]);
+    // Create new user
+    const createUserSQL = 'INSERT INTO users(username, password, email) VALUES($1, $2, $3) Returning *;';
+    const newUserData = await pgDB.query(createUserSQL, [username, hashedPassword, email]);
+    console.log('newUserData:', newUserData.rows[0]);
 
-//     // Generate variables for next middleware
-//     res.locals.newUser = newUserData.rows[0];
-//     res.locals.userId = newUserData.rows[0].id;
-//     res.locals.username = newUserData.rows[0].username;
-//     return next();
-//   } catch (err) {
-//     return next({
-//       log: `userController.createUser: ERROR ${err}`,
-//       status: 500,
-//       message: { error: 'Error occurred in userController.createUser.'}
-//     });
-//   }
-// };
+    // Generate variables for next middleware
+    res.locals.newUser = newUserData.rows[0];
+    res.locals.userId = newUserData.rows[0].id;
+    res.locals.username = newUserData.rows[0].username;
+    return next();
+  } catch (err) {
+    return next({
+      log: `userController.createUser: ERROR ${err}`,
+      status: 500,
+      message: { error: 'Error occurred in userController.createUser.'}
+    });
+  }
+};
 
 // Export
 export default userController;
