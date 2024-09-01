@@ -34,30 +34,30 @@ tokenController.issueToken = (req, res, next) => {
 /*
  * VERIFY TOKEN
  */
-// tokenController.verifyToken = (req, res, next) => {
-//   console.log("In tokenController.verifyToken");
-//   const token = req.cookies.quiz_user; // Destructure from cookies
+tokenController.verifyToken = (req, res, next) => {
+  console.log("In tokenController.verifyToken");
+  const token = req.cookies.quiz_user; // Destructure from cookies
 
-//   // Shorten the console log
-//   const shortenedToken = token.slice(-10);
-//   console.log(`Token from cookie: ...${shortenedToken}`);
+  // Shorten the console log
+  const shortenedToken = token.slice(-10);
+  console.log(`Token from cookie: ...${shortenedToken}`);
 
-//   // Check token
-//   if (!token) {
-//     return res.status(403).send('A token is required for authentication');
-//   }
+  // Check token
+  if (!token) {
+    return res.status(403).send('A token is required for authentication');
+  }
 
-//   // Verify token, extract userId and username
-//   try {
-//     const decoded = jwt.verify(token, SECRET_KEY);
-//     console.log('Token verified.');
-//     res.locals.userId = decoded.userId;
-//     res.locals.username = decoded.username;
-//     return next();
-//   } catch (err) {
-//       return res.status(401).send('Invalid token');
-//   }
-// };
+  // Verify token, extract userId and username
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    console.log('Token verified.');
+    res.locals.userId = decoded.userId;
+    res.locals.username = decoded.username;
+    return next();
+  } catch (err) {
+      return res.status(401).send('Invalid token');
+  }
+};
 
 
 // Export
