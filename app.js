@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+dotenv.config();
 
 import userRoute from './routes/userRoute.js';
 import quizRoute from './routes/quizRoute.js';
