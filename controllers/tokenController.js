@@ -44,8 +44,11 @@ tokenController.verifyToken = (req, res, next) => {
 
   // Check token
   if (!token) {
-    return res.status(403).send('A token is required for authentication');
-  }
+    return next({
+      log: `tokenController.verifyToken: ERROR: 'A token is required for authentication'`,
+      status: 403,
+      message: { error: 'Error occurred in tokenController.verifyToken'}
+  })}
 
   // Verify token, extract userId and username
   try {
@@ -55,8 +58,11 @@ tokenController.verifyToken = (req, res, next) => {
     res.locals.username = decoded.username;
     return next();
   } catch (err) {
-      return res.status(401).send('Invalid token');
-  }
+    return next({
+      log: `tokenController.verifyToken: ERROR: 'Invalid token'`,
+      status: 401,
+      message: { error: 'Error occurred in tokenController.verifyToken'}
+  })}
 };
 
 

@@ -43,8 +43,11 @@ userController.verifyUser = async (req, res, next) => {
 
       // Return error when password doesn't match
       console.log('Password is not valid');
-      return res.status(401).json({ err: 'Invalid credentials.' });
-    }
+      return next({
+        log: `userController.verifyUser: ERROR: 'Invalid credentials.'`,
+        status: 401,
+        message: { error: 'Error occurred in userController.verifyUser'}
+    })}
   } catch (err) {
     return next({
       log: `userController.verifyUser: ERROR ${err}`,
