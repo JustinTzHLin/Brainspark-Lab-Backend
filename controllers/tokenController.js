@@ -21,7 +21,7 @@ tokenController.issueToken = (req, res, next) => {
   // Store the token in HTTP-only cookie
   res.cookie('quiz_user', token, {
     expires: new Date(Date.now() + 60 * 60 * 1000),
-    httpOnly: true, 
+    secure: true,
   });
 
   const shortenedToken = token.slice(-10)
