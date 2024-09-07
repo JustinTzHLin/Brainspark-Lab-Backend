@@ -1,5 +1,8 @@
 import bcrypt from "bcryptjs";
-import pgDB from '../databases/pgDB.js';
+import pgDB from '../configs/pgDB.js';
+//test
+import transporter from "../configs/mail.js";
+
 const SALT_WORK_FACTOR = 10;
 
 const userController = {};
@@ -103,6 +106,38 @@ userController.createUser = async (req, res, next) => {
     });
   }
 };
+
+//test
+userController.confirm = async (req, res, next) => {
+  console.log("In userController.confirm");
+  const mailOptions = {
+    from: process.env.SMTP_EMAIL,
+    to: 'hozion612356@gmail.com',
+    subject: 'Welcome to Trivioasis!',
+    text: 'Thank you for signing up!',
+    html: "<h1>Welcome to Trivioasis!</h1>" +
+      "<p>We're excited to have you join our community of curious minds.</p>" +
+      "<p>To complete your signup and start exploring Trivioasis, please click the link below:</p>" +
+      '<p><a href="https://your-app-domain/signup?token=...">Complete Signup</a></p>' +
+      "<p>If you have any questions or need assistance, please don't hesitate to contact us at support@trivioasis.com.</p>" +
+      "<p>Happy quizzing!</p>"
+  };
+  try {
+    const verifyEmailResult = await transporter.verify();
+    console.log('verifyEmailResult:', verifyEmailResult);
+
+    const sendEmailResult = await transporter.sendMail(mailOptions);
+    console.log('sendEmailResult:', sendEmailResult);
+
+    return next();
+  } catch (err) {
+    return next({
+      log: `userController.confirm: ERROR ${err}`,
+      status: 500,
+      message: { error: 'Error occurred in userController.confirm.'}
+    });
+  }
+}
 
 // Export
 export default userController;
