@@ -10,6 +10,29 @@ router.post(
   (req, res) => res.status(200).json(res.locals.newUser)
 )
 
+//test
+router.post(
+  '/confirmRegistration',
+  userController.confirmRegistration,
+  (req, res) => res.status(200).send('Email sent successfully')
+)
+
+//test
+router.post(
+  '/emailConfirm',
+  userController.confirmEmail,
+  (req, res) => res.status(200).json({result: res.locals.emailResult})
+)
+
+//test
+router.post(
+  '/tokenConfirm',
+  tokenController.confirmToken,
+  (req, res) => res.status(200).json({
+    result: res.locals.result, useremail: res.locals.useremail
+  })
+)
+
 router.post(
   '/signIn',
   userController.verifyUser,

@@ -1,4 +1,4 @@
-import pgDB from '../databases/pgDB.js';
+import pgDB from '../configs/pgDB.js';
 
 const quizController = {};
 

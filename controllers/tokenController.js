@@ -8,11 +8,11 @@ const tokenController = {};
  */
 tokenController.issueToken = (req, res, next) => {
   console.log("In tokenController.issueToken");
-  const { userId, username } = res.locals;
+  const { userId, email } = res.locals;
   console.log(SECRET_KEY)
   // Issue token
   const token = jwt.sign(
-    { userId: userId, username: username},
+    { userId: userId, email: email},
     SECRET_KEY,
     { expiresIn: '1h' }
   );
@@ -66,6 +66,44 @@ tokenController.verifyToken = (req, res, next) => {
   })}
 };
 
+/*
+ *  CONFIRM TOKEN
+ */
+tokenController.confirmToken = (req, res, next) => {
+  console.log("In tokenController.confirmToken");
+  const { token } = req.body;
+  
+  // Shorten the console log
+  const shortenedToken = token.slice(-10);
+  console.log(`Token from email: ...${shortenedToken}`);
+
+  // Check token
+  if (!token) {
+    return next({
+      log: `tokenController.confirmToken: ERROR: 'A token is required for signup'`,
+      status: 403,
+      message: { error: 'Error occurred in tokenController.confirmToken'}
+  })}
+
+  // Verify token, extract userId and username
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    console.log('Token verified.');
+    res.locals.useremail = decoded.useremail;
+    return next();
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return next({
+        log: `tokenController.confirmToken: ERROR: 'Token expired'`,
+        status: 401,
+        message: { error: 'Error occurred in tokenController.confirmToken', type: 'token_expired' }
+    })}
+    return next({
+      log: `tokenController.confirmToken: ERROR: 'Invalid token'`,
+      status: 401,
+      message: { error: 'Error occurred in tokenController.confirmToken'}
+  })}
+};
 
 // Export
 export default tokenController;
