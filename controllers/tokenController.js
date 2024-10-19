@@ -19,7 +19,7 @@ tokenController.issueToken = (req, res, next) => {
   console.log(token);
 
   // Store the token in HTTP-only cookie
-  res.cookie('quiz_user', token, {
+  res.cookie('brainspark-lab_user', token, {
     secure: true,
     sameSite: "none",
     expires: new Date(Date.now() + 60 * 60 * 1000),
@@ -37,11 +37,7 @@ tokenController.issueToken = (req, res, next) => {
  */
 tokenController.verifyToken = (req, res, next) => {
   console.log("In tokenController.verifyToken");
-  const token = req.cookies.quiz_user; // Destructure from cookies
-
-  // Shorten the console log
-  const shortenedToken = token.slice(-10);
-  console.log(`Token from cookie: ...${shortenedToken}`);
+  const token = req.cookies['brainspark-lab_user']; // Destructure from cookies
 
   // Check token
   if (!token) {
@@ -51,12 +47,16 @@ tokenController.verifyToken = (req, res, next) => {
       message: { error: 'Error occurred in tokenController.verifyToken'}
   })}
 
+  // Shorten the console log
+  const shortenedToken = token.slice(-10);
+  console.log(`Token from cookie: ...${shortenedToken}`);
+
   // Verify token, extract userId and username
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
     console.log('Token verified.');
     res.locals.userId = decoded.userId;
-    res.locals.username = decoded.username;
+    res.locals.email = decoded.email;
     return next();
   } catch (err) {
     return next({
